@@ -11,5 +11,6 @@ This Symfony project is dedicated to creating a project management application w
 - [ ] **Database**: Implement database functionality for storing and retrieving data.
 
 
-Bundles:
+### Bundles:
+
 - composer require --dev symfony/maker-bundle
