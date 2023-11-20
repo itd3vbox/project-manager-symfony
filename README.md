@@ -14,3 +14,4 @@ This Symfony project is dedicated to creating a project management application w
 ### Bundles:
 
 - composer require --dev symfony/maker-bundle
+- composer require symfony/orm-pack
