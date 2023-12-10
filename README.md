@@ -1,6 +1,6 @@
 # 🚀 Project Management - Symfony 📊
 
-This Symfony project is dedicated to creating a project management application with a robust backend architecture, developed in the form of an API. The main goal is to provide an elegant user interface through React, simplifying the visualization and interaction with project data.
+This Laravel project is dedicated to creating a project management application with a robust backend architecture, developed in the form of an API. The main goal is to be able to connect any kind of Front End App (React, Vue.js), mobile (Android / iOS), and desktop apps (Electron, ...).s
 
 ### Tasks
 
@@ -15,3 +15,4 @@ This Symfony project is dedicated to creating a project management application w
 
 - composer require --dev symfony/maker-bundle
 - composer require symfony/orm-pack
+- composer require symfony/form
