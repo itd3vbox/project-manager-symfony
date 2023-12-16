@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SettingsController extends AbstractController
 {
-    #[Route('/settings', name: 'settings-home', methods: ['GET'])]
+    #[Route('/settings', name: 'settings', methods: ['GET'])]
     public function index(): JsonResponse
     {
         return $this->json([
@@ -17,7 +17,7 @@ class SettingsController extends AbstractController
         ]);
     }
 
-    #[Route('/settings/username', name: 'settings-update-username', methods: ['PUT'])]
+    #[Route('/settings/{id}/username', name: 'settings.update.username', methods: ['PUT'])]
     public function updateUsername(): JsonResponse
     {
         return $this->json([
@@ -26,7 +26,7 @@ class SettingsController extends AbstractController
         ]);
     }
 
-    #[Route('/settings/email', name: 'settings-update-email', methods: ['PUT'])]
+    #[Route('/settings/{id}/email', name: 'settings.update.email', methods: ['PUT'])]
     public function updateEmail(): JsonResponse
     {
         return $this->json([

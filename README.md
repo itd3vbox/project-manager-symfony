@@ -16,3 +16,13 @@ This Laravel project is dedicated to creating a project management application w
 - composer require --dev symfony/maker-bundle
 - composer require symfony/orm-pack
 - composer require symfony/form
+- composer require symfony/serializer
+
+### Commands
+
+    symfony server:start
+    php bin/console doctrine:database:create
+    php bin/console make:migration
+    php bin/console doctrine:migrations:migrate
+    php bin/console make:form UserStoreType
+

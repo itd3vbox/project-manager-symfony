@@ -6,6 +6,7 @@ use App\Repository\ProjectRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: "projects")] 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project
 {

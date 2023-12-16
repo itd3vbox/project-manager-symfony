@@ -6,6 +6,7 @@ use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: "tasks")] 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
