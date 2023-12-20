@@ -5,10 +5,12 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Table(name: "users")]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -69,6 +71,29 @@ class User
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        // Return null unless you are using a legacy encoder
+        return null;
+    }
+
+    // Implement methods from UserInterface
+    public function getRoles(): array
+    {
+        return ['ROLE_USER']; // You can customize the roles based on your requirements
+    }
+
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data in this user class,
+        // eraseCredentials should be implemented to remove it
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email; // or use any unique identifier for your user
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
