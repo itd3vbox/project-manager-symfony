@@ -24,8 +24,11 @@ This Laravel project is dedicated to creating a project management application w
 
     symfony server:start
     php bin/console doctrine:database:create
+    sudo chmod 777 var/app.db
+    
     php bin/console make:migration
     php bin/console doctrine:migrations:migrate
     php bin/console make:form UserStoreType
     php bin/console doctrine:fixtures:load
+    
 
