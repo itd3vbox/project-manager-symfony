@@ -26,8 +26,11 @@ class Project
     #[ORM\Column]
     private ?int $status = null;
 
-    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'project')]
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Task::class)]
     private Collection $tasks;
+
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Test::class)]
+    private Collection $tests;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
@@ -38,6 +41,7 @@ class Project
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->tests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -81,6 +85,9 @@ class Project
         return $this;
     }
 
+    /**
+     * @return Collection<int, Task>
+     */
     public function getTasks(): Collection
     {
         return $this->tasks;
@@ -90,7 +97,7 @@ class Project
     {
         if (!$this->tasks->contains($task)) 
         {
-            $this->tasks[] = $task;
+            $this->tasks->add($task);
             $task->setProject($this);
         }
 
@@ -101,13 +108,46 @@ class Project
     {
         if ($this->tasks->removeElement($task)) 
         {
+            // set the owning side to null (unless already changed)
             if ($task->getProject() === $this) 
             {
                 $task->setProject(null);
             }
         }
         return $this;
-    } 
+    }
+
+    /**
+     * @return Collection<int, Test>
+     */
+    public function getTests(): Collection
+    {
+        return $this->tests;
+    }
+
+    public function addTest(Test $test): static
+    {
+        if (!$this->tests->contains($test)) 
+        {
+            $this->tests->add($test);
+            $test->setProject($this);
+        }
+        return $this;
+    }
+
+    public function removeTest(Test $test): static
+    {
+        if ($this->tests->removeElement($test)) 
+        {
+            // set the owning side to null (unless already changed)
+            if ($test->getProject() === $this) 
+            {
+                $test->setProject(null);
+            }
+        }
+
+        return $this;
+    }
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
