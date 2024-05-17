@@ -7,12 +7,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Task;
+use App\Entity\Project;
 use App\Form\TaskStoreType;
 use App\Form\TaskUpdateType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class TaskController extends AbstractController
 {
@@ -24,11 +26,15 @@ class TaskController extends AbstractController
     {
         $tasks = $entityManager->getRepository(Task::class)->findAll();
 
-        $tasksSerialized = $serializer->normalize($tasks, null,);
+        $tasksSerialized = $serializer->serialize($tasks, 'json', [
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['project'],
+        ]);
+
+        $tasksJSON = json_decode($tasksSerialized, true);
 
         return $this->json([
             'message' => 'Task fetched successfully',
-            'tasks' => $tasksSerialized,
+            'tasks' => $tasksJSON,
         ]);
     }
 
@@ -48,57 +54,67 @@ class TaskController extends AbstractController
             ], 404);
         }
 
-        $taskSerialized = $serializer->normalize($task, null,);
+        $taskSerialized = $serializer->serialize($task, 'json', [
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['project'],
+        ]);
+
+        $taskJSON = json_decode($taskSerialized, true);
 
         return $this->json([
             'message' => 'Task fetched successfully',
-            'project' => $taskSerialized,
+            'task' => $taskJSON,
         ]);
     }
 
     #[Route('/tasks', name: 'tasks.store', methods: ['POST'])]
     public function store(
         Request $request, 
-        EntityManagerInterface $entityManager, 
-        FormFactoryInterface $formFactory,
+        EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
     ): JsonResponse
     {
+        $data = json_decode($request->getContent(), true);
+
         $task = new Task();
+
+        $task->setTitle($data['title']);
+        $task->setDescriptionShort($data['description_short']);
+        $task->setDescription($data['description']);
         $task->setStatus(0);
-        $task->setCreatedAt(new \DateTimeImmutable);
-        $task->setUpdatedAt(new \DateTimeImmutable);
 
-        $form = $formFactory->create(TaskStoreType::class, $task);
-
-        $form->submit(json_decode($request->getContent(), true));
-
-        if ($form->isValid()) 
+        $project = $entityManager->getRepository(Project::class)
+            ->find($data['project_id']);
+        if (!$project) 
         {
-            $entityManager->persist($task);
-
-            $entityManager->flush();
-
-            $taskSerialized = $serializer->normalize($task, null,);
-    
             return $this->json([
-                'message' => 'Task stored successfully',
-                'task' => $taskSerialized,
-            ]);
+                'error' => 'Project not found'
+            ], 404);
         }
+        $task->setProject($project);
 
-        $errors = $this->getErrorsFromForm($form);
+        $date = new \DateTimeImmutable;
+        $task->setCreatedAt($date);
+        $task->setUpdatedAt($date);
+
+        $entityManager->persist($task);
+        $entityManager->flush();
+
+        $taskSerialized = $serializer->serialize($task, 'json', [
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['project'],
+        ]);
+
+        $taskJSON = json_decode($taskSerialized, true);
 
         return $this->json([
-            'errors' => $this->getErrorsFromForm($form),
-        ], 400);
+            'message' => 'Task stored successfully',
+            'task' => $taskJSON,
+        ]);
     }
 
     #[Route('/tasks/{id}', name: 'tasks.update', methods: ['PUT'])]
     public function update(
         Request $request, 
         EntityManagerInterface $entityManager, 
-        FormFactoryInterface $formFactory,
         SerializerInterface $serializer,
         int $id,
     ): JsonResponse
@@ -112,29 +128,26 @@ class TaskController extends AbstractController
             ], 404);
         }
 
+        $data = json_decode($request->getContent(), true);
+        
+        $task->setTitle($data['title']);
+        $task->setDescriptionShort($data['description_short']);
+        $task->setDescription($data['description']);
+        $task->setStatus($data['status']);
         $task->setUpdatedAt(new \DateTimeImmutable);
 
-        $form = $formFactory->create(TaskUpdateType::class, $task);
+        $entityManager->flush();
 
-        $form->submit(json_decode($request->getContent(), true));
+        $taskSerialized = $serializer->serialize($task, 'json', [
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['project'],
+        ]);
 
-        if ($form->isValid()) 
-        {        
-            $entityManager->flush();
-
-            $taskSerialized = $serializer->normalize($task, null,);
-    
-            return $this->json([
-                'message' => 'Project updated successfully',
-                'task' => $taskSerialized,
-            ]);
-        }
- 
-        $errors = $this->getErrorsFromForm($form);
+        $taskJSON = json_decode($taskSerialized, true);
 
         return $this->json([
-            'errors' => $this->getErrorsFromForm($form),
-        ], 400);
+            'message' => 'Task updated successfully',
+            'task' => $taskJSON,
+        ]);
     }
 
     #[Route('/tasks/{id}', name: 'tasks.destroy', methods: ['DELETE'])]
@@ -156,29 +169,15 @@ class TaskController extends AbstractController
         $entityManager->remove($task);
         $entityManager->flush();
 
-        $taskSerialized = $serializer->normalize($task, null,);
+        $taskSerialized = $serializer->serialize($task, 'json', [
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['project'],
+        ]);
+
+        $taskJSON = json_decode($taskSerialized, true);
 
         return $this->json([
             'message' => 'Task destroyed successfully',
-            'task' => $taskSerialized,
+            'task' => $taskJSON,
         ]);
-    }
-
-    private function getErrorsFromForm(FormInterface $form): array
-    {
-        $errors = [];
-
-        foreach ($form->getErrors(true, true) as $error) {
-            $errors[] = $error->getMessage();
-        }
-
-        foreach ($form->all() as $childForm) {
-            if ($childForm instanceof FormInterface) {
-                $childErrors = $this->getErrorsFromForm($childForm);
-                $errors = array_merge($errors, $childErrors);
-            }
-        }
-
-        return $errors;
     }
 }

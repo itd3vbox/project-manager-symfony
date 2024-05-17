@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ProjectRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Table(name: "projects")] 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
@@ -24,11 +26,19 @@ class Project
     #[ORM\Column]
     private ?int $status = null;
 
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'project')]
+    private Collection $tasks;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updated_at = null;
+
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -70,6 +80,34 @@ class Project
 
         return $this;
     }
+
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): static
+    {
+        if (!$this->tasks->contains($task)) 
+        {
+            $this->tasks[] = $task;
+            $task->setProject($this);
+        }
+
+        return $this;
+    }
+ 
+    public function removeTask(Task $task): static
+    {
+        if ($this->tasks->removeElement($task)) 
+        {
+            if ($task->getProject() === $this) 
+            {
+                $task->setProject(null);
+            }
+        }
+        return $this;
+    } 
 
     public function getCreatedAt(): ?\DateTimeInterface
     {

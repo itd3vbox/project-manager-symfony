@@ -21,11 +21,15 @@ class Task
     #[ORM\Column(length: 255)]
     private ?string $description_short = null;
 
-    #[ORM\Column]
-    private array $description = [];
+    #[ORM\Column(type: "json", nullable: true)]
+    private ?array $description = null;
 
     #[ORM\Column]
     private ?int $status = null;
+
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Project $project = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
@@ -62,12 +66,12 @@ class Task
         return $this;
     }
 
-    public function getDescription(): array
+    public function getDescription(): ?array
     {
         return $this->description;
     }
 
-    public function setDescription(array $description): static
+    public function setDescription(?array $description): static
     {
         $this->description = $description;
 
@@ -82,6 +86,18 @@ class Task
     public function setStatus(int $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        $this->project = $project;
 
         return $this;
     }
