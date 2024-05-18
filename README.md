@@ -4,11 +4,11 @@ This Laravel project is dedicated to creating a project management application w
 
 ### Tasks
 
-- [ ] **Settings Controller**: Create a controller for managing user settings, with capabilities for updating name, email, and password.
-- [ ] **Forms**: Develop forms for both creating and updating.
-- [ ] **Database**: Implement database functionality for storing and retrieving data.
-- [ ] **Tests**: Implement tests for Project, Task & Settings.
-
+- [ ] Export / Import Data
+- [ ] Create Fixtures
+- [ ] Add image for a project
+- [ ] Implement user Sign In
+- [ ] Write PHP Tests
 
 ### Bundles:
 
@@ -23,11 +23,14 @@ This Laravel project is dedicated to creating a project management application w
 ### Commands
 
     symfony server:start
-    php bin/console doctrine:database:create
+    php bin/console php bin/console doctrine:database:create
     sudo chmod 777 var/app.db
+    sudo chown -R zero:zero project-manager-symfony
+    sudo chmod -R u+w project-manager-symfony
+
     
     php bin/console make:migration
-    php bin/console doctrine:migrations:migrate
+    php bin/console php bin/console doctrine:migrations:migrate
     php bin/console make:form UserStoreType
     php bin/console doctrine:fixtures:load
     
