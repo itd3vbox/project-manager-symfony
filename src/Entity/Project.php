@@ -29,8 +29,8 @@ class Project
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Task::class)]
     private Collection $tasks;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Test::class)]
-    private Collection $tests;
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Automate::class)]
+    private Collection $automates;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
@@ -41,7 +41,7 @@ class Project
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
-        $this->tests = new ArrayCollection();
+        $this->automates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,31 +118,31 @@ class Project
     }
 
     /**
-     * @return Collection<int, Test>
+     * @return Collection<int, Automate>
      */
-    public function getTests(): Collection
+    public function getAutomates(): Collection
     {
-        return $this->tests;
+        return $this->automates;
     }
 
-    public function addTest(Test $test): static
+    public function addAutomate(Automate $automate): static
     {
-        if (!$this->tests->contains($test)) 
+        if (!$this->automates->contains($automate)) 
         {
-            $this->tests->add($test);
-            $test->setProject($this);
+            $this->automates->add($automate);
+            $automate->setProject($this);
         }
         return $this;
     }
 
-    public function removeTest(Test $test): static
+    public function removeAutomate(Automate $automate): static
     {
-        if ($this->tests->removeElement($test)) 
+        if ($this->automates->removeElement($automate)) 
         {
             // set the owning side to null (unless already changed)
-            if ($test->getProject() === $this) 
+            if ($automate->getProject() === $this) 
             {
-                $test->setProject(null);
+                $automate->setProject(null);
             }
         }
 

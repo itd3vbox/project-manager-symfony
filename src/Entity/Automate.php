@@ -14,7 +14,32 @@ class Automate
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $type = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description_short = null;
+
+    #[ORM\Column(type: "json", nullable: true)]
+    private ?array $description = null;
+    
+    #[ORM\Column(length: 255)]
     private ?string $command = null;
+
+    #[ORM\Column(type: "bigint", nullable: true)]
+    private ?int $duration = null;
+
+    #[ORM\Column]
+    private ?int $status = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $folder_path = null;
+
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'automates')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Project $project = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -27,6 +52,54 @@ class Automate
         return $this->id;
     }
 
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getDescriptionShort(): ?string
+    {
+        return $this->description_short;
+    }
+
+    public function setDescriptionShort(string $description_short): static
+    {
+        $this->description_short = $description_short;
+
+        return $this;
+    }
+
+    public function getDescription(): ?array
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?array $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public function getCommand(): ?string
     {
         return $this->command;
@@ -35,6 +108,54 @@ class Automate
     public function setCommand(string $command): static
     {
         $this->command = $command;
+
+        return $this;
+    }
+
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(?int $duration): self
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getFolderPath(): ?string
+    {
+        return $this->folder_path;
+    }
+
+    public function setFolderPath(string $folder_path): static
+    {
+        $this->folder_path = $folder_path;
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        $this->project = $project;
 
         return $this;
     }

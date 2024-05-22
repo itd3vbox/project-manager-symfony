@@ -25,14 +25,14 @@ class HomeController extends AbstractController
     {
         $totalProjects = $entityManager->createQuery('SELECT COUNT(p) FROM App\Entity\Project p')->getSingleScalarResult();
         $totalTasks = $entityManager->createQuery('SELECT COUNT(t) FROM App\Entity\Task t')->getSingleScalarResult();
-        $totalTests = $entityManager->createQuery('SELECT COUNT(t) FROM App\Entity\Test t')->getSingleScalarResult();
+        $totalAutomates = $entityManager->createQuery('SELECT COUNT(t) FROM App\Entity\Automate t')->getSingleScalarResult();
         $totalNotifications = $entityManager->createQuery('SELECT COUNT(n) FROM App\Entity\Notification n')->getSingleScalarResult();
 
         return $this->json([
             'data' => [
                 'total_projects' => $totalProjects,
                 'total_tasks' => $totalTasks,
-                'total_tests' => $totalTests,
+                'total_automates' => $totalAutomates,
                 'total_notifications' => $totalNotifications,
             ]
         ]);

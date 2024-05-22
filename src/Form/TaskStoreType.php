@@ -8,6 +8,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use App\Form\Type\JSONType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TaskStoreType extends AbstractType
@@ -17,7 +19,6 @@ class TaskStoreType extends AbstractType
         $builder
             ->add('title', TextType::class)
             ->add('description_short', TextType::class)
-            ->add('description', CollectionType::class)
         ;
     }
 

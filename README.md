@@ -19,6 +19,7 @@ This Laravel project is dedicated to creating a project management application w
 - composer require --dev orm-fixtures
 - composer require symfony/password-hasher
 - composer require symfony/validator
+- composer require --dev symfony/test-pack
 
 ### Commands
 
@@ -33,5 +34,18 @@ This Laravel project is dedicated to creating a project management application w
     php bin/console php bin/console doctrine:migrations:migrate
     php bin/console make:form UserStoreType
     php bin/console doctrine:fixtures:load
+
+    php bin/console doctrine:database:create --env=test
+    php bin/console doctrine:migrations:migrate --env=test
+    php bin/console d:f:l --env=test --no-interaction
+    php bin/console make:test
+    php bin/phpunit
+
+### SQL
+
+    SHOW DATABASES;
+    SELECT host, user FROM mysql.user;
+    SHOW GRANTS FOR 'alpha'@'%';
+    SHOW GRANTS FOR 'superuser'@'%';
     
 
